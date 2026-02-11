@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bridal Makeup Studio</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background:#f8f9fc;
+      color:#111827;
+      line-height:1.5;
+    }
+
+    .site-container {
+      width:100%;
+      max-width:1240px;
+      margin:0 auto;
+      padding:0 20px;
+    }
+
+    /* Navbar – balanced layout */
+    .navbar {
+      position:fixed;
+      top:0; left:0; right:0;
+      height:70px;
+      background:white;
+      border-bottom:1px solid rgba(0,0,0,0.08);
+      z-index:1000;
+      box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .navbar .site-container {
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .logo {
+  font-size: clamp(1.4rem, 5vw, 1.8rem);   /* shrinks safely on small screens */
+  font-weight: 800;
+  color: #c026d3;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1;                            /* prevents extra vertical space */
+  max-width: 60%;                            /* prevents overflow on very narrow screens */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  .navbar .site-container {
+    padding: 0 16px;                         /* less horizontal padding on mobile */
+  }
+
+  .nav-right {
+    gap: 16px;                               /* tighter spacing between menu & button */
+  }
+
+  .get-in-touch-btn {
+    padding: 10px 20px;
+    font-size: 0.95rem;                      /* smaller button text */
+  }
+
+  .nav-menu {
+    gap: 20px;                               /* tighter menu item spacing */
+  }
+}
+
+    .nav-right {
+      display:flex;
+      align-items:center;
+      gap:40px;
+    }
+
+    .nav-menu {
+      display:flex;
+      gap:36px;
+      list-style:none;
+      margin:0;
+      padding:0;
+      align-items:center;
+    }
+
+    .nav-menu a {
+      color:#111827;
+      text-decoration:none;
+      font-weight:500;
+      font-size:1.05rem;
+      transition:color 0.2s;
+    }
+
+    .nav-menu a:hover { color:#c026d3; }
+
+    /* Dropdown under Services */
+    .dropdown {
+      position:relative;
+    }
+
+    .dropdown-toggle {
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .dropdown-toggle::after {
+      content:"▼";
+      font-size:0.7rem;
+      opacity:0.7;
+    }
+
+    .dropdown-menu {
+      position:absolute;
+      top:100%;
+      left:0;
+      background:white;
+      min-width:220px;
+      border-radius:8px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.15);
+      padding:12px 0;
+      margin-top:8px;
+      opacity:0;
+      visibility:hidden;
+      transform:translateY(8px);
+      transition:all 0.25s ease;
+      z-index:1001;
+      list-style:none;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      opacity:1;
+      visibility:visible;
+      transform:translateY(0);
+    }
+
+    .dropdown-item {
+      display:block;
+      padding:10px 20px;
+      color:#111827;
+      text-decoration:none;
+      font-size:0.98rem;
+      transition:background 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background:#fdf4ff;
+      color:#c026d3;
+    }
+
+    /* CTA Button */
+.cta-button {
+  display: inline-block;
+  margin-top: 2rem;
+  background: #c026d3;
+  color: white;
+  padding: 16px 40px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.15rem;
+  box-shadow: 0 6px 16px rgba(192,38,211,0.3);
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  background: #a81bb8;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(192,38,211,0.45);
+}
+
+    .get-in-touch-btn {
+      background:#c026d3;
+      color:white;
+      padding:12px 28px;
+      border-radius:50px;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow:0 4px 12px rgba(192,38,211,0.3);
+      transition:all 0.25s;
+      white-space:nowrap;
+    }
+
+    .get-in-touch-btn:hover {
+      background:#a81bb8;
+      transform:translateY(-1px);
+      box-shadow:0 6px 16px rgba(192,38,211,0.4);
+    }
+
+    body { padding-top:70px; }
+
+    /* Hero – makeup application images from web URLs */
+    .hero {
+      position:relative;
+      height:100vh;
+      min-height:640px;
+      overflow:hidden;
+      color:white;
+      display:flex;
+      align-items:center;
+    }
+
+    .slide {
+      position:absolute;
+      inset:0;
+      background-size:cover;
+      background-position:center;
+      opacity:0;
+      transition:opacity 1.2s ease-in-out;
+    }
+
+    .slide.active { opacity:1; }
+
+    .hero-content-wrapper {
+      position:relative;
+      z-index:5;
+      width:100%;
+    }
+
+    .hero-content {
+      max-width:620px;
+      text-align:left;
+    }
+
+    .hero-content h1 {
+      font-size:clamp(2.8rem,7.5vw,5.2rem);
+      font-weight:800;
+      margin-bottom:1.2rem;
+      text-shadow:0 4px 20px rgba(0,0,0,0.75);
+    }
+
+    .hero-content p {
+      font-size:clamp(1.15rem,2.8vw,1.45rem);
+      opacity:0.94;
+    }
+
+    .progress-container {
+      position:absolute;
+      bottom:32px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:12px;
+      z-index:10;
+    }
+
+    .progress-bar {
+      width:70px;
+      height:5px;
+      background:rgba(255,255,255,0.35);
+      border-radius:4px;
+      overflow:hidden;
+    }
+
+    .progress {
+      width:0;
+      height:100%;
+      background:white;
+      transition:width 3s linear;
+    }
+
+    .hero::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(to right, rgba(0,0,0,0.55), rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.45));
+      z-index:1;
+    }
+
+    /* Features */
+    .features-section {
+      padding:100px 0;
+      background:white;
+    }
+
+    .features {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:32px;
+    }
+
+    .feature-card {
+      background:white;
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+      transition:transform 0.25s ease, box-shadow 0.25s ease;
+      position:relative;
+      height:380px;
+      cursor:pointer;
+    }
+
+    .feature-card:hover {
+      transform:translateY(-8px);
+      box-shadow:0 20px 40px rgba(0,0,0,0.14);
+    }
+
+    .feature-card::after {
+      content:"Learn more →";
+      position:absolute;
+      bottom:0; left:0; right:0;
+      height:0;
+      background:#c026d3;
+      color:white;
+      font-weight:600;
+      font-size:1.1rem;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:height 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .feature-card:hover::after { height:80px; }
+
+    .card-content {
+      padding:32px;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .icon {
+      font-size:3.5rem;
+      margin-bottom:24px;
+      color:#c026d3;
+    }
+
+    .feature-card h3 {
+      font-size:1.6rem;
+      margin-bottom:16px;
+    }
+
+    .feature-card p {
+      font-size:1.05rem;
+      color:#4b5563;
+      margin-top:auto;
+    }
+
+    @media (min-width: 640px)  { .features { grid-template-columns:repeat(2,1fr); } }
+    @media (min-width: 1024px) { .features { grid-template-columns:repeat(3,1fr); gap:40px; } }
+
+    /* CTA */
+    .cta-section {
+      padding:100px 0;
+      background:#fdf4ff;
+      text-align:center;
+    }
+
+    .cta-section h2 {
+      font-size:clamp(2.4rem,6vw,3.8rem);
+      font-weight:800;
+      margin-bottom:1.5rem;
+    }
+
+    .cta-section p {
+      font-size:clamp(1.1rem,2.5vw,1.35rem);
+      color:#4b5563;
+      max-width:720px;
+      margin:0 auto;
+    }
+
+    /* Gallery */
+    .gallery-section {
+      padding:100px 0;
+      background:white;
+    }
+
+    .gallery-grid {
+      column-count:2;
+      column-gap:16px;
+    }
+
+    @media (min-width:640px)  { .gallery-grid { column-count:3; column-gap:20px; } }
+    @media (min-width:1024px) { .gallery-grid { column-count:4; column-gap:24px; } }
+
+    .gallery-item {
+      break-inside:avoid;
+      margin-bottom:24px;
+      border-radius:12px;
+      overflow:hidden;
+      cursor:pointer;
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform:scale(1.04);
+      box-shadow:0 12px 32px rgba(0,0,0,0.15);
+    }
+
+    .gallery-item img {
+      width:100%;
+      height:auto;
+      display:block;
+      transition:transform 0.4s ease;
+    }
+
+    .gallery-item:hover img { transform:scale(1.08); }
+
+    /* Modal */
+    .image-modal {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.92);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:2000;
+      opacity:0;
+      visibility:hidden;
+      transition:opacity 0.4s ease;
+    }
+
+    .image-modal.active {
+      opacity:1;
+      visibility:visible;
+    }
+
+    .modal-content {
+      position:relative;
+      max-width:92vw;
+      max-height:92vh;
+      transform:scale(0.85);
+      transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .image-modal.active .modal-content { transform:scale(1); }
+
+    .modal-img {
+      max-width:100%;
+      max-height:90vh;
+      border-radius:12px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    .modal-close {
+      position:absolute;
+      top:-40px;
+      right:-40px;
+      color:white;
+      font-size:2.2rem;
+      cursor:pointer;
+      opacity:0.8;
+      transition:opacity 0.2s;
+    }
+
+    .modal-close:hover { opacity:1; }
+
+    .footer {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 100px 0 60px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 60px 40px;
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 2fr 1fr 1fr;   /* logo column wider, others equal */
+    align-items: start;
+  }
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-col {
+  max-width: 420px;
+}
+
+/* Policies column - now left-aligned */
+.policies-col {
+  justify-self: start;        /* left-aligned on grid */
+  text-align: left;           /* left-aligned text */
+}
+
+.footer-logo {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #c026d3;
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
+
+.footer-desc {
+  font-size: 1rem;
+  line-height: 1.7;
+  opacity: 0.9;
+}
+
+.footer-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: white;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 0.98rem;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #c026d3;
+}
+
+.footer-bottom {
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  text-align: center;
+  font-size: 0.92rem;
+  opacity: 0.75;
+}
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="site-container">
+    <a href="#" class="logo">Bridal Glow Studio</a>
+    <div class="nav-right">
+      <ul class="nav-menu">
+        <li class="dropdown">
+          <div class="dropdown-toggle">Services</div>
+          <ul class="dropdown-menu">
+            <li><a href="#" class="dropdown-item">Facial Touchups</a></li>
+            <li><a href="#" class="dropdown-item">Full Make Up Kit</a></li>
+            <li><a href="#" class="dropdown-item">Bridal Special</a></li>
+          </ul>
+        </li>
+        <li><a href="#about">About Us</a></li>
+      </ul>
+      <a href="#contact" class="get-in-touch-btn">Get in Touch</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero – only makeup application images from web URLs -->
+<!-- Hero – now using LOCAL images again -->
+<section class="hero">
+  <div class="slide" style="background-image:url('images/makeup_1.jpg');"></div>
+  <div class="slide" style="background-image:url('images/makeup_2.jpeg');"></div>
+  <div class="slide" style="background-image:url('images/makeup_3.jpg');"></div>
+  <div class="slide" style="background-image:url('images/makeup_4.jpeg');"></div>
+
+  <div class="hero-content-wrapper site-container">
+    <div class="hero-content" id="hero-text"></div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar"><div class="progress"></div></div>
+    <div class="progress-bar"><div class="progress"></div></div>
+    <div class="progress-bar"><div class="progress"></div></div>
+    <div class="progress-bar"><div class="progress"></div></div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features-section">
+  <div class="site-container">
+    <div class="features">
+      <div class="feature-card">
+        <div class="card-content">
+          <div class="icon">✨</div>
+          <h3>Airbrush Makeup</h3>
+          <p>Flawless, long-lasting finish perfect for photos and all-day wear.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="card-content">
+          <div class="icon">💄</div>
+          <h3>HD Bridal Glow</h3>
+          <p>Radiant, camera-ready skin with natural yet glamorous look.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="card-content">
+          <div class="icon">👑</div>
+          <h3>Luxury Bridal Package</h3>
+          <p>Full day service including trial, touch-ups & accessories styling.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="site-container">
+    <div class="content">
+      <h2>Your Dream Bridal Look Awaits</h2>
+      <p>Book your consultation today and let us create the most beautiful version of you for your big day.</p>
+
+      <!-- New CTA Button -->
+      <a href="#contact" class="cta-button">Book Your Consultation Now</a>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section class="gallery-section">
+  <div class="site-container">
+    <h2 style="text-align:center; margin-bottom:2.5rem; font-size:clamp(2.2rem,5vw,3.4rem); font-weight:800;">
+      Bridal Gallery
+    </h2>
+
+    <div class="gallery-grid">
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1662561283890-b00a2d5b4bfc?w=800" alt="Bride 1"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1600685890506-593fdf55949b?w=800" alt="Bride 2"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1677691257005-9d69ab23f485?w=800" alt="Bride 3"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/flagged/photo-1551854716-8b811be39e7e?w=800" alt="Bride 4"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal -->
+<div class="image-modal" id="imageModal">
+  <div class="modal-content">
+    <span class="modal-close" id="modalClose">×</span>
+    <img class="modal-img" id="modalImage" src="" alt="Zoomed image">
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="site-container">
+    <div class="footer-grid">
+
+      <!-- Column 1: Logo + Description + Intro -->
+      <div class="footer-col brand-col">
+        <a href="#" class="footer-logo">Bridal Glow Studio</a>
+        <p class="footer-desc">
+          Bridal Glow Studio is a premium bridal makeup and styling service based in Bengaluru, 
+          dedicated to creating timeless, elegant looks for your most special day. 
+          Led by <strong>Gauri Kumar</strong>, a highly skilled makeup artist with over 8 years 
+          of experience in the bridal makeover industry, we specialize in personalized, 
+          camera-ready bridal transformations that celebrate your unique beauty.
+        </p>
+      </div>
+
+      <!-- Column 2: Quick Links -->
+      <div class="footer-col">
+        <h4 class="footer-title">Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Policies -->
+      <div class="footer-col policies-col">
+        <h4 class="footer-title">Policies</h4>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Refund Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cancellation Policy</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Bridal Glow Studio. All rights reserved. Web Experience Designed by Praana Digital.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Hero slider logic
+const slides = document.querySelectorAll('.slide');
+const progressBars = document.querySelectorAll('.progress');
+const heroTextEl = document.getElementById('hero-text');
+const DURATION = 3000;
+let current = 0;
+let intervalId = null;
+
+const slideContents = [
+  { h1: "Expert Makeup Application", p: "Precision techniques for flawless bridal beauty." },
+  { h1: "Perfect Eye Definition", p: "Long-lasting, dramatic eyes that shine all day." },
+  { h1: "Radiant Base & Glow", p: "Airbrush foundation and contouring for camera-ready skin." },
+  { h1: "Final Glam Finishing", p: "Lips, cheeks, highlights — complete bridal perfection." }
+];
+
+function updateHeroText(idx) {
+  const c = slideContents[idx];
+  heroTextEl.innerHTML = `<h1>${c.h1}</h1><p>${c.p}</p>`;
+}
+
+function resetBars() {
+  progressBars.forEach(b => { b.style.transition='none'; b.style.width='0%'; void b.offsetWidth; });
+}
+
+function startCurrentBar() {
+  const bar = progressBars[current];
+  bar.style.transition = `width ${DURATION}ms linear`;
+  bar.style.width = '100%';
+}
+
+function showSlide(idx) {
+  slides.forEach((s,i)=>s.classList.toggle('active',i===idx));
+  updateHeroText(idx);
+  resetBars();
+  startCurrentBar();
+}
+
+function nextSlide() { current=(current+1)%slides.length; showSlide(current); }
+
+function startSlider() {
+  showSlide(0);
+  intervalId = setInterval(nextSlide, DURATION);
+}
+
+document.querySelector('.hero').addEventListener('mouseenter',()=>{
+  clearInterval(intervalId);
+  progressBars.forEach(b=>b.style.transition='none');
+});
+
+document.querySelector('.hero').addEventListener('mouseleave',()=>{
+  startCurrentBar();
+  intervalId = setInterval(nextSlide, DURATION);
+});
+
+startSlider();
+
+// Gallery modal
+const galleryItems = document.querySelectorAll('.gallery-item');
+const modal = document.getElementById('imageModal');
+const modalImg = document.getElementById('modalImage');
+const modalClose = document.getElementById('modalClose');
+
+galleryItems.forEach(item=>{
+  item.addEventListener('click',()=>{
+    modalImg.src = item.querySelector('img').src.replace(/w=\d+/,'w=1600');
+    modal.classList.add('active');
+  });
+});
+
+function closeModal(){ modal.classList.remove('active'); }
+
+modalClose.addEventListener('click',closeModal);
+modal.addEventListener('click',e=>{if(e.target===modal)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
+
+</body>
+</html>
